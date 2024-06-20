@@ -12,7 +12,7 @@ H.default_config = {
 
 H.setup_config = function(config)
     vim.validate({ config = { config, "table", true } })
-    config = vim.tbl_deep_extend("force", vim.deepcopy(H.defaut_config), config or {})
+    config = vim.tbl_deep_extend("force", vim.deepcopy(H.default_config), config or {})
 
     vim.validate({
         find_tool = { config.find_tool, "string" },
