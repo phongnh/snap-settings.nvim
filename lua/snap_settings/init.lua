@@ -59,7 +59,7 @@ end
 H.build_find_args = function()
     local find_args = {
         fd = { "--type", "file", "--color", "never", "--hidden" },
-        rg = { "--files", "--color", "never", "--ignore-dot", "--ignore-parent", "--hidden" },
+        rg = { "--files", "--line-buffered", "--color", "never", "--ignore-dot", "--ignore-parent", "--hidden" },
     }
 
     if SnapSettings.config.find_tool == "rg" then
@@ -82,7 +82,7 @@ end
 H.build_find_all_args = function()
     local find_all_args = {
         fd = { "--type", "file", "--color", "never", "--no-ignore", "--hidden", "--follow" },
-        rg = { "--files", "--color", "never", "--no-ignore", "--hidden", "--follow" },
+        rg = { "--files", "--line-buffered", "--color", "never", "--no-ignore", "--hidden", "--follow" },
     }
 
     if SnapSettings.config.find_tool == "rg" then
@@ -96,6 +96,7 @@ end
 
 H.build_grep_args = function()
     SnapSettings.config.grep_args = {
+        "--line-buffered",
         "--color",
         "never",
         "-H",
