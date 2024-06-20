@@ -41,6 +41,19 @@ H.apply_config = function(config)
     H.build_find_args()
     H.build_find_all_args()
     H.build_grep_args()
+
+    vim.api.nvim_create_user_command("ToggleSnapFollowLinks", function()
+        if config.follow_links == 0 then
+            config.follow_links = 1
+            print("Snap follows symlinks!")
+        else
+            config.follow_links = 0
+            print("Snap does not follow symlinks!")
+        end
+
+        H.build_find_args()
+        H.build_grep_args()
+    end, {})
 end
 
 H.build_find_args = function()
