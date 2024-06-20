@@ -8,11 +8,30 @@ H.default_config = {
     find_no_ignore_vcs = 0,
     grep_no_ignore_vcs = 0,
     preview = false,
+    mappings = {
+        ["enter-split"] = { "<C-x>" },
+        ["enter-tab"] = { "<C-t>" },
+        ["enter-vsplit"] = { "<C-v>" },
+        ["select-all"] = { "<C-z>" },
+        ["prev-item"] = { "<Up>", "<C-k>" },
+        ["next-item"] = { "<Down>", "<C-j>" },
+        ["prev-page"] = { "<C-p>", "<PageUp>" },
+        ["next-page"] = { "<C-n>", "<PageDown>" },
+        ["view-page-down"] = { "<C-f>" },
+        ["view-page-up"] = { "<C-b>" },
+        ["view-toggle-hide"] = { ";", "<C-\\>" },
+        enter = { "<CR>" },
+        exit = { "<Esc>", "<C-c>" },
+        next = { "<C-q>" },
+        select = { "<Tab>" },
+        unselect = { "<S-Tab>" },
+    },
 }
 
 H.setup_config = function(config)
     vim.validate({ config = { config, "table", true } })
     config = vim.tbl_deep_extend("force", vim.deepcopy(H.default_config), config or {})
+    config.mappings = vim.tbl_deep_extend("force", vim.deepcopy(H.default_config.mappings), config.mappings or {})
 
     vim.validate({
         find_tool = { config.find_tool, "string" },
@@ -20,6 +39,26 @@ H.setup_config = function(config)
         find_no_ignore_vcs = { config.find_no_ignore_vcs, "number" },
         grep_no_ignore_vcs = { config.grep_no_ignore_vcs, "number" },
         preview = { config.preview, "boolean" },
+        mappings = { config.mappings, "table", true },
+    })
+
+    vim.validate({
+        ["mappings.enter-split"] = { config.mappings["enter-split"], "table", true },
+        ["mappings.enter-tab"] = { config.mappings["enter-tab"], "table", true },
+        ["mappings.enter-vsplit"] = { config.mappings["enter-vsplit"], "table", true },
+        ["mappings.select-all"] = { config.mappings["select-all"], "table", true },
+        ["mappings.prev-item"] = { config.mappings["prev-item"], "table", true },
+        ["mappings.next-item"] = { config.mappings["next-item"], "table", true },
+        ["mappings.prev-page"] = { config.mappings["prev-page"], "table", true },
+        ["mappings.next-page"] = { config.mappings["next-page"], "table", true },
+        ["mappings.view-page-down"] = { config.mappings["view-page-down"], "table", true },
+        ["mappings.view-page-up"] = { config.mappings["view-page-up"], "table", true },
+        ["mappings.view-toggle-hide"] = { config.mappings["view-toggle-hide"], "table", true },
+        ["mappings.enter"] = { config.mappings["enter"], "table", true },
+        ["mappings.exit"] = { config.mappings["exit"], "table", true },
+        ["mappings.next"] = { config.mappings["next"], "table", true },
+        ["mappings.select"] = { config.mappings["select"], "table", true },
+        ["mappings.unselect"] = { config.mappings["unselect"], "table", true },
     })
 
     return config
