@@ -169,16 +169,11 @@ function M.files(opts)
 
     opts = vim.tbl_deep_extend("force", {
         prompt = "Files>",
-        producer = fzy(function(request)
-            local dir = snap.sync(function()
-                return cwd
-            end)
-            return files(request, {
-                cmd = opts.cmd or config.find_tool,
-                args = opts.args or config.find_args,
-                cwd = dir,
-            })
-        end),
+        producer = fzy(files.with({
+            cmd = opts.cmd or config.find_tool,
+            args = opts.args or config.find_args,
+            cwd = cwd,
+        })),
         select = select_files.select(cwd),
         multiselect = select_files.multiselect(cwd),
         layout = snap.get("layout").centered,
@@ -188,6 +183,33 @@ function M.files(opts)
     }, opts)
 
     snap.run(opts)
+end
+
+function M.git_files(opts)
+    opts = opts or {}
+
+    local snap = require("snap")
+    local fzy = snap.get("consumer.fzy")
+    local try = snap.get("consumer.try")
+    local files = snap.get("producer.files")
+    local cwd = vim.fn.empty(opts.cwd) ~= 1 and opts.cwd or vim.fn.getcwd()
+
+    M.files({
+        prompt = opts.prompt or "Git Files>",
+        producer = fzy(try(
+            files.with({
+                cmd = "git",
+                args = { "ls-files", "--cached", "--others", "--exclude-standard" },
+                cwd = cwd,
+            }),
+            files.with({
+                cmd = _G.SnapSettings.config.find_tool,
+                args = _G.SnapSettings.config.find_args,
+                cwd = cwd,
+            })
+        )),
+        cwd = cwd,
+    })
 end
 
 function M.setup(config)

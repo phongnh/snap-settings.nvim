@@ -1,3 +1,6 @@
+local M = {}
+
+local snap = require("snap")
 local io = require("snap.common.io")
 local string = require("snap.common.string")
 
@@ -20,4 +23,31 @@ local function producer(request, opts)
     return nil
 end
 
-return producer
+M.default = function(request)
+    local opts = {
+        cmd = _G.SnapSettings.config.find_tool,
+        args = _G.SnapSettings.config.find_args,
+        cwd = vim.fn.getcwd(),
+    }
+    snap.sync(vim.fn.getcwd)
+    return producer(request, opts)
+end
+
+M.with = function(opts)
+    opts = opts or {}
+    opts.cwd = vim.fn.empty(opts.cwd) ~= 1 and opts.cwd or vim.fn.getcwd()
+
+    return function(request)
+        local cwd = snap.sync(function()
+            return opts.cwd
+        end)
+
+        return producer(request, {
+            cmd = opts.cmd or _G.SnapSettings.config.find_tool,
+            args = opts.args or _G.SnapSettings.config.find_args,
+            cwd = cwd,
+        })
+    end
+end
+
+return M
