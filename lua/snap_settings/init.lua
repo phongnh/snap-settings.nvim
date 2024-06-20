@@ -145,7 +145,7 @@ H.apply_config = function(config)
         local cwd = vim.find_buffer_project_dir()
         cwd = vim.fn.empty(cwd) ~= 1 and cwd or vim.fn.getcwd()
         M.git_files({
-            prompt = string.format("%s>", vim.fn.fnamemodify(cwd, ":~:.")),
+            prompt = string.format("%s>", shortpath(cwd)),
             cwd = cwd,
         })
     end)
