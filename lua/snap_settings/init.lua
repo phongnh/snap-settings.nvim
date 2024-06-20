@@ -157,6 +157,39 @@ H.build_grep_args = function()
     return SnapSettings.config.grep_args
 end
 
+function M.files(opts)
+    opts = opts or {}
+
+    local snap = require("snap")
+    local fzy = snap.get("consumer.fzy")
+    local files = snap.get("producer.files")
+    local select_files = snap.get("select.files")
+    local config = _G.SnapSettings.config
+    local cwd = vim.fn.empty(opts.cwd) ~= 1 and opts.cwd or vim.fn.getcwd()
+
+    opts = vim.tbl_deep_extend("force", {
+        prompt = "Files>",
+        producer = fzy(function(request)
+            local dir = snap.sync(function()
+                return cwd
+            end)
+            return files(request, {
+                cmd = opts.cmd or config.find_tool,
+                args = opts.args or config.find_args,
+                cwd = dir,
+            })
+        end),
+        select = select_files.select(cwd),
+        multiselect = select_files.multiselect(cwd),
+        layout = snap.get("layout").centered,
+        mappings = config.mappings,
+        hide_views = not config.preview,
+        views = { snap.get("preview.file") },
+    }, opts)
+
+    snap.run(opts)
+end
+
 function M.setup(config)
     -- Export module
     _G.SnapSettings = M
