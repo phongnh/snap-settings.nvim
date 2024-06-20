@@ -93,6 +93,64 @@ H.apply_config = function(config)
         H.build_find_args()
         H.build_grep_args()
     end, {})
+
+    vim.api.nvim_create_user_command("SnapFiles", function(opts)
+        local cwd = vim.fn.empty(opts.args) ~= 1 and opts.args or vim.fn.getcwd()
+        M.files({ cwd = cwd })
+    end, { nargs = "?", complete = "dir" })
+
+    local snap = require("snap")
+    local file = snap.config.file:with({
+        consumer = "fzy",
+        layout = snap.get("layout").centered,
+        mappings = _G.SnapSettings.config.mappings,
+        preview = _G.SnapSettings.config.preview,
+    })
+    local vimgrep = snap.config.vimgrep:with({
+        consumer = "fzf",
+        producer = "ripgrep.vimgrep",
+        args = _G.SnapSettings.config.grep_args,
+        layout = snap.get("layout").bottom,
+        mappings = _G.SnapSettings.config.mappings,
+    })
+
+    snap.register.command("files", function()
+        M.files()
+    end)
+
+    snap.register.command("all_files", function()
+        M.files({
+            prompt = "All Files>",
+            cmd = _G.SnapSettings.config.find_tool,
+            args = _G.SnapSettings.config.find_all_args,
+        })
+    end)
+
+    snap.register.command("git_files", function()
+        M.git_files()
+    end)
+
+    snap.register.command("root", function()
+        local cwd = vim.find_buffer_project_dir()
+        cwd = vim.fn.empty(cwd) ~= 1 and cwd or vim.fn.getcwd()
+        M.git_files({
+            prompt = string.format("%s>", vim.fn.fnamemodify(cwd, ":~:.")),
+            cwd = cwd,
+        })
+    end)
+
+    snap.register.command("buffer_dir", function()
+        M.files({
+            prompt = "Buffer Dir>",
+            cwd = vim.fn.expand("%" .. vim.fn["repeat"](":h", vim.v.count1)),
+        })
+    end)
+
+    snap.register.command("oldfiles", file({ combine = { "vim.buffer", "vim.oldfile" } }))
+    snap.register.command("buffers", file({ producer = "vim.buffer" }))
+    snap.register.command("live_grep", vimgrep({}))
+    snap.register.command("live_grep_cword", vimgrep({ filter_with = "cword" }))
+    snap.register.command("live_grep_selection", vimgrep({ filter_with = "selection" }))
 end
 
 H.build_find_args = function()
