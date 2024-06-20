@@ -1,5 +1,16 @@
 local M = {}
 
+local shortpath = function(path)
+    local short = vim.fn.fnamemodify(path, ":~:.")
+    if vim.fn.has("win32unix") == 0 then
+        short = vim.fn.pathshorten(short)
+    end
+    local is_win = (vim.fn.has("win32") == 1) or (vim.fn.has("win64") == 1)
+    local slash = (is_win and not vim.opt.shellslash) and "\\" or "/"
+    return vim.fn.empty(short) == 1 and ("~" .. slash)
+        or (short .. (string.find(short, vim.fn.escape(slash, "\\") .. "$") ~= nil and "" or slash))
+end
+
 local H = {}
 
 H.default_config = {
