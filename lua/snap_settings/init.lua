@@ -114,15 +114,15 @@ H.apply_config = function(config)
     local file = snap.config.file:with({
         consumer = "fzy",
         layout = snap.get("layout").centered,
-        mappings = _G.SnapSettings.config.mappings,
-        preview = _G.SnapSettings.config.preview,
+        mappings = SnapSettings.config.mappings,
+        preview = SnapSettings.config.preview,
     })
     local vimgrep = snap.config.vimgrep:with({
         consumer = "fzf",
         producer = "ripgrep.vimgrep",
-        args = _G.SnapSettings.config.grep_args,
+        args = SnapSettings.config.grep_args,
         layout = snap.get("layout").bottom,
-        mappings = _G.SnapSettings.config.mappings,
+        mappings = SnapSettings.config.mappings,
     })
 
     snap.register.command("files", function()
@@ -132,8 +132,8 @@ H.apply_config = function(config)
     snap.register.command("all_files", function()
         M.files({
             prompt = "All Files>",
-            cmd = _G.SnapSettings.config.find_tool,
-            args = _G.SnapSettings.config.find_all_args,
+            cmd = SnapSettings.config.find_tool,
+            args = SnapSettings.config.find_all_args,
         })
     end)
 
@@ -233,7 +233,7 @@ function M.files(opts)
     local fzy = snap.get("consumer.fzy")
     local files = snap.get("producer.files")
     local select_files = snap.get("select.files")
-    local config = _G.SnapSettings.config
+    local config = SnapSettings.config
     local cwd = vim.fn.empty(opts.cwd) ~= 1 and opts.cwd or vim.fn.getcwd()
 
     opts = vim.tbl_deep_extend("force", {
@@ -272,8 +272,8 @@ function M.git_files(opts)
                 cwd = cwd,
             }),
             files.with({
-                cmd = _G.SnapSettings.config.find_tool,
-                args = _G.SnapSettings.config.find_args,
+                cmd = SnapSettings.config.find_tool,
+                args = SnapSettings.config.find_args,
                 cwd = cwd,
             })
         )),

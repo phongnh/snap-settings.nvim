@@ -25,8 +25,8 @@ end
 
 M.default = function(request)
     local opts = {
-        cmd = _G.SnapSettings.config.find_tool,
-        args = _G.SnapSettings.config.find_args,
+        cmd = SnapSettings.config.find_tool,
+        args = SnapSettings.config.find_args,
         cwd = vim.fn.getcwd(),
     }
     snap.sync(vim.fn.getcwd)
@@ -43,8 +43,8 @@ M.with = function(opts)
         end)
 
         return producer(request, {
-            cmd = opts.cmd or _G.SnapSettings.config.find_tool,
-            args = opts.args or _G.SnapSettings.config.find_args,
+            cmd = opts.cmd or SnapSettings.config.find_tool,
+            args = opts.args or SnapSettings.config.find_args,
             cwd = cwd,
         })
     end
