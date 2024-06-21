@@ -15,7 +15,7 @@ end
 M.multiselect = function(cwd)
     local select = M.select(cwd)
 
-    return function(selection, winnr)
+    return function(selections, winnr)
         for index, selection in ipairs(selections) do
             select(selection, #selections == index and winnr or false)
         end
