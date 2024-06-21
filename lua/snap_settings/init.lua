@@ -18,6 +18,7 @@ H.default_config = {
     follow_links = 0,
     find_no_ignore_vcs = 0,
     grep_no_ignore_vcs = 0,
+    ctags_bin = "ctags",
     preview = false,
     mappings = {
         ["enter-split"] = { "<C-x>" },
@@ -49,6 +50,7 @@ H.setup_config = function(config)
         follow_links = { config.follow_links, "number" },
         find_no_ignore_vcs = { config.find_no_ignore_vcs, "number" },
         grep_no_ignore_vcs = { config.grep_no_ignore_vcs, "number" },
+        ctags_bin = { config.ctags_bin, "string" },
         preview = { config.preview, "boolean" },
         mappings = { config.mappings, "table", true },
     })
