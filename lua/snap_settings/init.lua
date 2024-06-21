@@ -164,6 +164,24 @@ H.apply_config = function(config)
     snap.register.command("live_grep", vimgrep({}))
     snap.register.command("live_grep_cword", vimgrep({ filter_with = "cword" }))
     snap.register.command("live_grep_selection", vimgrep({ filter_with = "selection" }))
+
+    snap.register.command("boutline", function()
+        local fzy = snap.get("consumer.fzy")
+        local boutline = snap.get("producer.boutline")
+        local select_file = snap.get("select.boutline")
+        local buf = vim.api.nvim_get_current_buf()
+
+        snap.run({
+            prompt = "BOutline>",
+            producer = fzy(boutline.with({ buf = buf })),
+            select = select_file.select(buf),
+            multiselect = select_file.multiselect(buf),
+            layout = snap.get("layout").centered,
+            mappings = SnapSettings.config.mappings,
+            hide_views = not SnapSettings.config.preview,
+            views = { snap.get("preview.file") },
+        })
+    end)
 end
 
 H.build_find_args = function()
