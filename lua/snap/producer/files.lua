@@ -24,13 +24,12 @@ local function producer(request, opts)
 end
 
 M.default = function(request)
-    local opts = {
+    local cwd = snap.sync(vim.fn.getcwd)
+    return producer(request, {
         cmd = SnapSettings.config.find_tool,
         args = SnapSettings.config.find_args,
-        cwd = vim.fn.getcwd(),
-    }
-    snap.sync(vim.fn.getcwd)
-    return producer(request, opts)
+        cwd = cwd,
+    })
 end
 
 M.with = function(opts)
@@ -38,14 +37,10 @@ M.with = function(opts)
     opts.cwd = vim.fn.empty(opts.cwd) ~= 1 and opts.cwd or vim.fn.getcwd()
 
     return function(request)
-        local cwd = snap.sync(function()
-            return opts.cwd
-        end)
-
         return producer(request, {
             cmd = opts.cmd or SnapSettings.config.find_tool,
             args = opts.args or SnapSettings.config.find_args,
-            cwd = cwd,
+            cwd = opts.cwd,
         })
     end
 end
